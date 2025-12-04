@@ -1,5 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Home, CreditCard, Wallet, Settings, LogOut, X, Briefcase } from 'lucide-react'
+import { Home, CreditCard, Settings, LogOut, X, Briefcase, Gift } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 
 interface SidebarProps {
@@ -14,8 +14,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const menuItems = [
     { to: '/', icon: Home, label: 'Início' },
     { to: '/cards', icon: CreditCard, label: 'Cartões' },
-    { to: '/accounts', icon: Wallet, label: 'Contas' },
     { to: '/services', icon: Briefcase, label: 'Serviços' },
+    { to: '/benefits', icon: Gift, label: 'Benefícios' },
     { to: '/settings', icon: Settings, label: 'Configurações' },
   ]
 

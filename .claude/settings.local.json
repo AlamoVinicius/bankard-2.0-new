@@ -6,7 +6,9 @@
       "Bash(npm run dev)",
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
-      "Bash(findstr :3000)"
+      "Bash(findstr :3000)",
+      "Bash(findstr:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

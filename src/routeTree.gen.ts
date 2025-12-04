@@ -16,6 +16,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedServicesIndexRouteImport } from './routes/_authenticated/services/index'
 import { Route as AuthenticatedCardsIndexRouteImport } from './routes/_authenticated/cards/index'
+import { Route as AuthenticatedBenefitsIndexRouteImport } from './routes/_authenticated/benefits/index'
 import { Route as AuthenticatedServicesBankTransferRouteImport } from './routes/_authenticated/services/bank-transfer'
 import { Route as AuthenticatedServicesBalanceTransferRouteImport } from './routes/_authenticated/services/balance-transfer'
 
@@ -54,6 +55,12 @@ const AuthenticatedCardsIndexRoute = AuthenticatedCardsIndexRouteImport.update({
   path: '/cards/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedBenefitsIndexRoute =
+  AuthenticatedBenefitsIndexRouteImport.update({
+    id: '/benefits/',
+    path: '/benefits/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedServicesBankTransferRoute =
   AuthenticatedServicesBankTransferRouteImport.update({
     id: '/services/bank-transfer',
@@ -74,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/services/balance-transfer': typeof AuthenticatedServicesBalanceTransferRoute
   '/services/bank-transfer': typeof AuthenticatedServicesBankTransferRoute
+  '/benefits': typeof AuthenticatedBenefitsIndexRoute
   '/cards': typeof AuthenticatedCardsIndexRoute
   '/services': typeof AuthenticatedServicesIndexRoute
 }
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/services/balance-transfer': typeof AuthenticatedServicesBalanceTransferRoute
   '/services/bank-transfer': typeof AuthenticatedServicesBankTransferRoute
+  '/benefits': typeof AuthenticatedBenefitsIndexRoute
   '/cards': typeof AuthenticatedCardsIndexRoute
   '/services': typeof AuthenticatedServicesIndexRoute
 }
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/services/balance-transfer': typeof AuthenticatedServicesBalanceTransferRoute
   '/_authenticated/services/bank-transfer': typeof AuthenticatedServicesBankTransferRoute
+  '/_authenticated/benefits/': typeof AuthenticatedBenefitsIndexRoute
   '/_authenticated/cards/': typeof AuthenticatedCardsIndexRoute
   '/_authenticated/services/': typeof AuthenticatedServicesIndexRoute
 }
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/'
     | '/services/balance-transfer'
     | '/services/bank-transfer'
+    | '/benefits'
     | '/cards'
     | '/services'
   fileRoutesByTo: FileRoutesByTo
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/services/balance-transfer'
     | '/services/bank-transfer'
+    | '/benefits'
     | '/cards'
     | '/services'
   id:
@@ -129,6 +141,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/services/balance-transfer'
     | '/_authenticated/services/bank-transfer'
+    | '/_authenticated/benefits/'
     | '/_authenticated/cards/'
     | '/_authenticated/services/'
   fileRoutesById: FileRoutesById
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCardsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/benefits/': {
+      id: '/_authenticated/benefits/'
+      path: '/benefits'
+      fullPath: '/benefits'
+      preLoaderRoute: typeof AuthenticatedBenefitsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/services/bank-transfer': {
       id: '/_authenticated/services/bank-transfer'
       path: '/services/bank-transfer'
@@ -212,6 +232,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedServicesBalanceTransferRoute: typeof AuthenticatedServicesBalanceTransferRoute
   AuthenticatedServicesBankTransferRoute: typeof AuthenticatedServicesBankTransferRoute
+  AuthenticatedBenefitsIndexRoute: typeof AuthenticatedBenefitsIndexRoute
   AuthenticatedCardsIndexRoute: typeof AuthenticatedCardsIndexRoute
   AuthenticatedServicesIndexRoute: typeof AuthenticatedServicesIndexRoute
 }
@@ -222,6 +243,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedServicesBalanceTransferRoute,
   AuthenticatedServicesBankTransferRoute:
     AuthenticatedServicesBankTransferRoute,
+  AuthenticatedBenefitsIndexRoute: AuthenticatedBenefitsIndexRoute,
   AuthenticatedCardsIndexRoute: AuthenticatedCardsIndexRoute,
   AuthenticatedServicesIndexRoute: AuthenticatedServicesIndexRoute,
 }
