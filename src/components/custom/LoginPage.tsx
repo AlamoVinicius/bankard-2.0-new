@@ -1,23 +1,20 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { cn } from '@/lib/utils'
-import { useAuth } from '@/hooks/useAuth'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "@tanstack/react-router";
 
 // Schema de validação Zod (simplificado para aceitar qualquer username/password)
 const loginSchema = z.object({
-  identifier: z
-    .string()
-    .min(1, 'Campo obrigatório'),
-  password: z
-    .string()
-    .min(1, 'Campo obrigatório'),
-})
+  identifier: z.string().min(1, "Campo obrigatório"),
+  password: z.string().min(1, "Campo obrigatório"),
+});
 
-type LoginFormData = z.infer<typeof loginSchema>
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginPage() {
-  const { login, isLoggingIn, loginError } = useAuth()
+  const { login, isLoggingIn, loginError } = useAuth();
 
   const {
     register,
@@ -25,20 +22,20 @@ export function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-  })
+  });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login({
         username: data.identifier.trim(),
         password: data.password,
-      })
+      });
       // Navigation is handled by useAuth hook
     } catch (error) {
       // Error is displayed via ErrorAlert below
-      console.error('Login failed:', error)
+      console.error("Login failed:", error);
     }
-  }
+  };
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -68,7 +65,9 @@ export function LoginPage() {
           {loginError && (
             <div className="mb-4 p-4 rounded-xl bg-red-500/20 border border-red-400/50 backdrop-blur-sm">
               <p className="text-red-300 text-sm">
-                {loginError instanceof Error ? loginError.message : 'Erro ao fazer login. Tente novamente.'}
+                {loginError instanceof Error
+                  ? loginError.message
+                  : "Erro ao fazer login. Tente novamente."}
               </p>
             </div>
           )}
@@ -86,17 +85,17 @@ export function LoginPage() {
               <input
                 id="identifier"
                 type="text"
-                {...register('identifier')}
+                {...register("identifier")}
                 className={cn(
-                  'w-full px-4 py-3 rounded-xl',
-                  'bg-white/10 backdrop-blur-sm',
-                  'border',
+                  "w-full px-4 py-3 rounded-xl",
+                  "bg-white/10 backdrop-blur-sm",
+                  "border",
                   errors.identifier
-                    ? 'border-red-400 focus:ring-red-400'
-                    : 'border-white/20 focus:ring-purple-400',
-                  'text-white placeholder:text-white/50',
-                  'focus:outline-none focus:ring-2 focus:border-transparent',
-                  'transition-all duration-200'
+                    ? "border-red-400 focus:ring-red-400"
+                    : "border-white/20 focus:ring-purple-400",
+                  "text-white placeholder:text-white/50",
+                  "focus:outline-none focus:ring-2 focus:border-transparent",
+                  "transition-all duration-200"
                 )}
                 placeholder="Digite seu email ou CPF"
               />
@@ -118,17 +117,17 @@ export function LoginPage() {
               <input
                 id="password"
                 type="password"
-                {...register('password')}
+                {...register("password")}
                 className={cn(
-                  'w-full px-4 py-3 rounded-xl',
-                  'bg-white/10 backdrop-blur-sm',
-                  'border',
+                  "w-full px-4 py-3 rounded-xl",
+                  "bg-white/10 backdrop-blur-sm",
+                  "border",
                   errors.password
-                    ? 'border-red-400 focus:ring-red-400'
-                    : 'border-white/20 focus:ring-purple-400',
-                  'text-white placeholder:text-white/50',
-                  'focus:outline-none focus:ring-2 focus:border-transparent',
-                  'transition-all duration-200'
+                    ? "border-red-400 focus:ring-red-400"
+                    : "border-white/20 focus:ring-purple-400",
+                  "text-white placeholder:text-white/50",
+                  "focus:outline-none focus:ring-2 focus:border-transparent",
+                  "transition-all duration-200"
                 )}
                 placeholder="Digite sua senha"
               />
@@ -154,14 +153,14 @@ export function LoginPage() {
               type="submit"
               disabled={isLoggingIn}
               className={cn(
-                'w-full py-3 px-4 rounded-xl font-semibold',
-                'bg-gradient-to-r from-purple-500 to-pink-500',
-                'text-white shadow-lg shadow-purple-500/50',
-                'hover:shadow-xl hover:shadow-purple-500/60',
-                'focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent',
-                'transform transition-all duration-200',
-                'hover:scale-[1.02] active:scale-[0.98]',
-                'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+                "w-full py-3 px-4 rounded-xl font-semibold",
+                "bg-gradient-to-r from-purple-500 to-pink-500",
+                "text-white shadow-lg shadow-purple-500/50",
+                "hover:shadow-xl hover:shadow-purple-500/60",
+                "focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent",
+                "transform transition-all duration-200",
+                "hover:scale-[1.02] active:scale-[0.98]",
+                "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               )}
             >
               {isLoggingIn ? (
@@ -185,7 +184,7 @@ export function LoginPage() {
                   Entrando...
                 </span>
               ) : (
-                'Entrar'
+                "Entrar"
               )}
             </button>
           </form>
@@ -193,13 +192,13 @@ export function LoginPage() {
           {/* Sign up link */}
           <div className="mt-8 text-center">
             <p className="text-white/70 text-sm">
-              Não tem uma conta?{' '}
-              <button
-                type="button"
+              Não tem uma conta?{" "}
+              <Link
+                to="/signup"
                 className="text-purple-300 hover:text-purple-200 font-semibold transition-colors"
               >
                 Criar conta
-              </button>
+              </Link>
             </p>
           </div>
         </div>
@@ -223,5 +222,5 @@ export function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

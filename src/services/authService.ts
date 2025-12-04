@@ -1,6 +1,6 @@
-import { useMutation } from '@tanstack/react-query'
-import { authRepository } from '@/repositories/authRepository'
-import type { LoginCredentials } from '@/models/Auth'
+import { useMutation } from "@tanstack/react-query";
+import { authRepository } from "@/repositories/authRepository";
+import type { LoginCredentials } from "@/models/Auth";
 
 /**
  * Auth Service
@@ -11,15 +11,16 @@ export function useAuthService() {
    * Mutation: Login
    */
   const loginMutation = useMutation({
-    mutationFn: (credentials: LoginCredentials) => authRepository.login(credentials),
-  })
+    mutationFn: (credentials: LoginCredentials) =>
+      authRepository.login(credentials),
+  });
 
   /**
    * Mutation: Logout
    */
   const logoutMutation = useMutation({
     mutationFn: () => authRepository.logout(),
-  })
+  });
 
   return {
     // Login
@@ -30,5 +31,5 @@ export function useAuthService() {
     // Logout
     logout: logoutMutation.mutateAsync,
     isLoggingOut: logoutMutation.isPending,
-  }
+  };
 }
