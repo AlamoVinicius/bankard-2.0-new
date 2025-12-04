@@ -4,10 +4,11 @@
  */
 
 /**
- * Login credentials
+ * Login request - based on API endpoint
+ * POST /v1/Auth/Login
  */
-export interface LoginCredentials {
-  username: string
+export interface LoginRequest {
+  login: string // CPF do usuário
   password: string
 }
 
@@ -15,6 +16,15 @@ export interface LoginCredentials {
  * Auth response from API
  */
 export interface AuthResponse {
+  token: string
+  expiresAt?: string // Optional expiration date
+}
+
+/**
+ * Authenticated user data
+ */
+export interface AuthUser {
+  login: string // CPF
   token: string
 }
 
@@ -24,4 +34,5 @@ export interface AuthResponse {
 export interface AuthState {
   isAuthenticated: boolean
   token: string | null
+  user: AuthUser | null
 }

@@ -1,37 +1,44 @@
+import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { useAuthService } from '@/services/authService'
+import { authRepository } from '@/repositories/authRepository'
 import { useAuthStore } from '@/stores/authStore'
-import type { LoginCredentials } from '@/models/Auth'
+import type { LoginRequest } from '@/models/Auth'
 
 /**
  * Custom hook for authentication
- * Combines service layer (TanStack Query) with state management (Zustand)
  * Handles login, logout, and auth state
  */
 export function useAuth() {
   const navigate = useNavigate()
-  const { login: loginMutation, logout: logoutMutation, isLoggingIn, isLoggingOut, loginError } = useAuthService()
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [loginError, setLoginError] = useState<Error | null>(null)
 
   // Zustand store
-  const { token, isAuthenticated, setToken, clearAuth } = useAuthStore()
+  const { token, user, isAuthenticated, setAuth, clearAuth } = useAuthStore()
 
   /**
    * Login user
    */
-  const login = async (credentials: LoginCredentials) => {
-    try {
-      const response = await loginMutation(credentials)
+  const login = async (credentials: LoginRequest) => {
+    setIsLoggingIn(true)
+    setLoginError(null)
 
-      // Save token to store (which persists to localStorage)
-      setToken(response.token)
+    try {
+      const response = await authRepository.login(credentials)
+
+      // Save token and user to store (which persists to localStorage)
+      setAuth(response.token, credentials.login)
 
       // Navigate to home page after successful login
       navigate({ to: '/' })
 
       return response
     } catch (error) {
-      // Error is already handled by TanStack Query
-      throw error
+      const err = error instanceof Error ? error : new Error('Erro ao fazer login')
+      setLoginError(err)
+      throw err
+    } finally {
+      setIsLoggingIn(false)
     }
   }
 
@@ -40,7 +47,7 @@ export function useAuth() {
    */
   const logout = async () => {
     try {
-      await logoutMutation()
+      await authRepository.logout()
 
       // Clear auth state
       clearAuth()
@@ -57,6 +64,7 @@ export function useAuth() {
   return {
     // State
     token,
+    user,
     isAuthenticated,
 
     // Actions
@@ -65,7 +73,6 @@ export function useAuth() {
 
     // Loading states
     isLoggingIn,
-    isLoggingOut,
 
     // Errors
     loginError,

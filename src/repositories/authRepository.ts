@@ -1,45 +1,51 @@
-import type { LoginCredentials, AuthResponse } from '@/models/Auth'
+import axios from 'axios'
+import type { LoginRequest, AuthResponse } from '@/models/Auth'
 
 /**
  * AuthRepository
  * Handles authentication API calls
  *
- * TODO: Replace simulated login with real API endpoint when available
+ * Login endpoint uses localhost, other endpoints use the base URL from env
  */
 class AuthRepository {
+  private readonly loginBaseUrl = 'https://localhost:7162'
+
   /**
-   * Simulated login with 2 second delay
-   * Returns hardcoded valid token for development
+   * Login user with CPF and password
+   * POST /v1/Auth/Login
    */
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    // Simulate API delay (2 seconds)
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    // Simulate validation (you can add your own logic here)
-    if (!credentials.username || !credentials.password) {
-      throw new Error('Username and password are required')
-    }
-
-    // TODO: Replace with real API call
-    // const response = await apiClient.post<AuthResponse>('/auth/login', credentials)
-    // return response.data
-
-    // Return token from environment variable for development
-    return {
-      token: import.meta.env.VITE_API_TOKEN || '',
+  async login(credentials: LoginRequest): Promise<AuthResponse> {
+    try {
+      const response = await axios.post<AuthResponse>(
+        `${this.loginBaseUrl}/v1/Auth/Login`,
+        credentials,
+        {
+          headers: {
+            'accept': 'text/plain',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          error.response?.data?.message ||
+          'Erro ao fazer login. Verifique suas credenciais.'
+        )
+      }
+      throw new Error('Erro ao fazer login.')
     }
   }
 
   /**
    * Logout (clear session)
-   * TODO: Implement real logout API call if needed
+   * Currently only clears local state
    */
   async logout(): Promise<void> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    // TODO: Call API to invalidate token if needed
-    // await apiClient.post('/auth/logout')
+    // Just clear local state for now
+    // If API has logout endpoint, implement here
+    return Promise.resolve()
   }
 }
 
