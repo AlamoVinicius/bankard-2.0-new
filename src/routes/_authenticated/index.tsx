@@ -1,9 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CreditCard, TrendingUp, DollarSign, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { useCard } from '@/hooks/useCard'
 import { ErrorAlert } from '@/components/ui/ErrorAlert'
 import { CardList } from '@/components/cards'
 import { TransactionList } from '@/components/transactions/TransactionList'
+import { ActivateCardModal } from '@/components/cards/ActivateCardModal'
+import { cardRepository } from '@/repositories/cardRepository'
+import type { Card } from '@/models/Card'
 
 export const Route = createFileRoute('/_authenticated/')({
   component: Dashboard,
@@ -15,6 +19,38 @@ function Dashboard() {
 
   // React Query handles automatic fetching when document is provided
   const { availableCards, isLoading, error, refetch } = useCard(DEFAULT_DOCUMENT)
+
+  // Modal state
+  const [isActivateModalOpen, setIsActivateModalOpen] = useState(false)
+  const [inactiveCards, setInactiveCards] = useState<Card[]>([])
+  const [isLoadingInactiveCards, setIsLoadingInactiveCards] = useState(false)
+
+  // Load inactive cards when modal opens
+  useEffect(() => {
+    const loadInactiveCards = async () => {
+      if (isActivateModalOpen && DEFAULT_DOCUMENT) {
+        setIsLoadingInactiveCards(true)
+        try {
+          const allCards = await cardRepository.getAllByDocument(DEFAULT_DOCUMENT)
+          // Filter cards that are not NORMAL (inactive cards)
+          const inactive = allCards.filter((card) => card.status !== 'NORMAL')
+          setInactiveCards(inactive)
+        } catch (error) {
+          console.error('Error loading inactive cards:', error)
+          setInactiveCards([])
+        } finally {
+          setIsLoadingInactiveCards(false)
+        }
+      }
+    }
+
+    loadInactiveCards()
+  }, [isActivateModalOpen])
+
+  const handleActivateSuccess = () => {
+    // Refresh cards list after activation
+    refetch()
+  }
 
   // Calculate stats from real data
   const stats = [
@@ -111,7 +147,10 @@ function Dashboard() {
               Ações Rápidas
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-              <button className="p-4 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-xl transition-colors text-center">
+              <button
+                onClick={() => setIsActivateModalOpen(true)}
+                className="p-4 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-xl transition-colors text-center"
+              >
                 <div className="text-2xl mb-2">💳</div>
                 <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                   Ativar Cartão
@@ -149,6 +188,15 @@ function Dashboard() {
           </div>
         </>
       )}
+
+      {/* Activate Card Modal */}
+      <ActivateCardModal
+        open={isActivateModalOpen}
+        onOpenChange={setIsActivateModalOpen}
+        inactiveCards={isLoadingInactiveCards ? [] : inactiveCards}
+        document={DEFAULT_DOCUMENT}
+        onSuccess={handleActivateSuccess}
+      />
     </div>
   )
 }

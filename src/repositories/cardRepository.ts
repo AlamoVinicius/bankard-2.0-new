@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/api-client'
 import { ApiError } from '@/lib/errors'
-import type { Card } from '@/models/Card'
+import type { Card, ActivateCardDTO } from '@/models/Card'
 
 /**
  * Card Repository
@@ -31,7 +31,7 @@ class CardRepository {
 
       // Otherwise, wrap in ApiError with user-friendly message
       throw new ApiError(
-        'Não foi possível carregar os cartões. Tente novamente.',
+        'Nï¿½o foi possï¿½vel carregar os cartï¿½es. Tente novamente.',
         500,
         error
       )
@@ -54,7 +54,7 @@ class CardRepository {
       }
 
       throw new ApiError(
-        'Não foi possível carregar os detalhes do cartão.',
+        'Nï¿½o foi possï¿½vel carregar os detalhes do cartï¿½o.',
         500,
         error
       )
@@ -75,7 +75,7 @@ class CardRepository {
       }
 
       throw new ApiError(
-        'Não foi possível bloquear o cartão. Tente novamente.',
+        'Nï¿½o foi possï¿½vel bloquear o cartï¿½o. Tente novamente.',
         500,
         error
       )
@@ -96,7 +96,61 @@ class CardRepository {
       }
 
       throw new ApiError(
-        'Não foi possível desbloquear o cartão. Tente novamente.',
+        'Nï¿½o foi possï¿½vel desbloquear o cartï¿½o. Tente novamente.',
+        500,
+        error
+      )
+    }
+  }
+
+  /**
+   * Activate a card
+   * @param data - Activation data (cardId, alias, password)
+   * @returns Activated card
+   * @throws ApiError with user-friendly message
+   */
+  async activateCard(data: ActivateCardDTO): Promise<Card> {
+    try {
+      const response = await apiClient.post<Card>(
+        `${this.basePath}/${data.cardId}/activate`,
+        {
+          alias: data.alias,
+          password: data.password,
+        }
+      )
+      return response.data
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error
+      }
+
+      throw new ApiError(
+        'NÃ£o foi possÃ­vel ativar o cartÃ£o. Verifique os dados e tente novamente.',
+        500,
+        error
+      )
+    }
+  }
+
+  /**
+   * Get all cards by document (including inactive ones)
+   * @param document - CPF number (only digits)
+   * @returns Array of all cards (active and inactive)
+   * @throws ApiError with user-friendly message
+   */
+  async getAllByDocument(document: string): Promise<Card[]> {
+    try {
+      const response = await apiClient.get<Card[]>(
+        `${this.basePath}/Document/${document}`
+      )
+      return response.data
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error
+      }
+
+      throw new ApiError(
+        'NÃ£o foi possÃ­vel carregar os cartÃµes. Tente novamente.',
         500,
         error
       )

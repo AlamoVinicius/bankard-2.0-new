@@ -1,5 +1,6 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { Home, CreditCard, Wallet, Settings, LogOut, X } from 'lucide-react'
+import { useAuthStore } from '@/stores/authStore'
 
 interface SidebarProps {
   isOpen: boolean
@@ -7,12 +8,24 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const navigate = useNavigate()
+  const { clearAuth } = useAuthStore()
+
   const menuItems = [
     { to: '/', icon: Home, label: 'Início' },
     { to: '/cards', icon: CreditCard, label: 'Cartões' },
     { to: '/accounts', icon: Wallet, label: 'Contas' },
     { to: '/settings', icon: Settings, label: 'Configurações' },
   ]
+
+  const handleLogout = () => {
+    // Clear auth state (removes token from localStorage)
+    clearAuth()
+    // Close sidebar if on mobile
+    onClose()
+    // Redirect to login page
+    navigate({ to: '/login' })
+  }
 
   return (
     <>
@@ -85,10 +98,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Footer */}
         <div className="p-4 sm:p-6 border-t border-gray-700">
           <button
-            onClick={() => {
-              // TODO: Implement logout
-              console.log('Logout')
-            }}
+            onClick={handleLogout}
             className="flex items-center gap-3 w-full p-3 sm:p-4 rounded-xl hover:bg-red-600/20 text-red-400 hover:text-red-300 transition-all group"
           >
             <LogOut

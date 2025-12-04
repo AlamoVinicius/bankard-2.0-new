@@ -24,9 +24,9 @@ class AuthRepository {
     // const response = await apiClient.post<AuthResponse>('/auth/login', credentials)
     // return response.data
 
-    // Return hardcoded valid token for development
+    // Return token from environment variable for development
     return {
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdhbml6YXRpb24iOiJBQ0ciLCJjbGllbnRLZXkiOiJjNThlMmEyZi0yN2YyLTQ5NzEtOTU1OS02YWIyZTEyMWVmNzAiLCJpbnRlcm5hbCI6ImZhbHNlIiwidHlwZSI6IkFwcFRva2VuIiwiaXYiOiJtVGY2ejdtUCt2bklZUXRxIiwieC1jb3JyZWxhdGlvbi1pZCI6IjIyZDAzMzcwMmNjNDQzZjRiZGY2ZDY3NzcwNTYxYTUwLTIwMjUxMjA0MTYyODUxNzE3IiwiYWNjb3VudHMiOiIxMjYxOTc0NzQ7MTI2MTk3NTA4OzEyNjE5NzY1NiIsInByb2dyYW1zIjoiMTM5ODE7MTM5ODI7MTM5Nzk7Njg3IiwiZG9jdW1lbnQiOiIxMjk1MTkwNDYwNiIsIm5iZiI6MTc2NDg2Njk2MCwiZXhwIjoxNzY0ODcwNTYwLCJpYXQiOjE3NjQ4NjY5NjAsImlzcyI6IkFDRy5EZWZpYW50LkhtbCIsImF1ZCI6IkFDRy5EZWZpYW50LkhtbCJ9._drJ35ANbRYb1zIWVX9FHizLo_xLvtqCGT8CFHvzdRM',
+      token: import.meta.env.VITE_API_TOKEN || '',
     }
   }
 

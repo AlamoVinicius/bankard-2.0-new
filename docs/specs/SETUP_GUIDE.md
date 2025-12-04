@@ -3,12 +3,14 @@
 ## Prerequisites
 
 ### Required Software
+
 - **Node.js:** v18.0.0 or higher (v20 LTS recommended)
 - **npm:** v9.0.0 or higher (comes with Node.js)
 - **Git:** Latest version
 - **Code Editor:** VS Code (recommended) or any modern editor
 
 ### Optional Tools
+
 - **pnpm** or **yarn** - Alternative package managers
 - **nvm** (Node Version Manager) - Manage multiple Node versions
 - **React DevTools** - Browser extension for debugging
@@ -87,22 +89,19 @@ npm run dev
 Create/update `vite.config.ts`:
 
 ```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
+import path from "path";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    TanStackRouterVite(),
-  ],
+  plugins: [react(), TanStackRouterVite()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+});
 ```
 
 ### 2. TypeScript Configuration
@@ -152,10 +151,10 @@ Create `tailwind.config.js`:
 export default {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   theme: {
     container: {
@@ -209,7 +208,7 @@ export default {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
 ```
 
 ### 4. Create Directory Structure
@@ -236,20 +235,20 @@ mkdir -p src/routes/accounts
 Create `src/lib/api-client.ts`:
 
 ```typescript
-import axios from 'axios';
+import axios from "axios";
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Request interceptor for auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem("auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -266,8 +265,8 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Handle unauthorized
-      localStorage.removeItem('auth_token');
-      window.location.href = '/login';
+      localStorage.removeItem("auth_token");
+      // window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -279,7 +278,7 @@ apiClient.interceptors.response.use(
 Create `src/lib/query-client.ts`:
 
 ```typescript
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -409,6 +408,7 @@ npm list --depth=0
 ```
 
 Expected packages:
+
 - react, react-dom
 - @tanstack/react-router, @tanstack/react-query
 - zustand

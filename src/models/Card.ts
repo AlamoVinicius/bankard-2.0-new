@@ -56,6 +56,15 @@ export interface UpdateCardDTO {
 }
 
 /**
+ * DTO para ativação de cartão
+ */
+export interface ActivateCardDTO {
+  cardId: number
+  alias: string
+  password: string
+}
+
+/**
  * Helper: Verifica se o cartão está ativo (NORMAL)
  */
 export function isCardActive(card: Card): boolean {
