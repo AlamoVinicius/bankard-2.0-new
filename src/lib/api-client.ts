@@ -15,13 +15,12 @@ export const apiClient = axios.create({
 });
 
 /**
- * Request interceptor - Add auth token from Zustand store or environment variable
+ * Request interceptor - Add auth token from Zustand store
  */
 apiClient.interceptors.request.use(
   (config) => {
-    // Get token from Zustand store, fallback to environment variable
-    const token =
-      useAuthStore.getState().token || import.meta.env.VITE_API_TOKEN;
+    // Get token from Zustand store
+    const token = useAuthStore.getState().token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

@@ -21,6 +21,10 @@ interface CardListProps {
    * Number of cards to display (undefined = show all)
    */
   limit?: number
+  /**
+   * Disable card flip animation (useful for dashboard/preview)
+   */
+  disableFlip?: boolean
 }
 
 /**
@@ -49,6 +53,7 @@ export function CardList({
   title = 'Meus Cartões',
   className = '',
   limit,
+  disableFlip = false,
 }: CardListProps) {
   const { availableCards, isLoading, error, refetch, selectCard } = useCard()
   const { selectedCard } = useCardStore()
@@ -130,12 +135,13 @@ export function CardList({
           {displayCards.map((card) => (
             <div
               key={card.cardId}
-              onClick={() => handleSelectCard(card)}
               className="cursor-pointer"
             >
               <CardItem
                 card={card}
                 isSelected={selectedCard?.cardId === card.cardId}
+                disableFlip={disableFlip}
+                onSelect={handleSelectCard}
               />
             </div>
           ))}

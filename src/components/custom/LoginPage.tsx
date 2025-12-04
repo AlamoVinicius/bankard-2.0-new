@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "@tanstack/react-router";
 
-// Schema de validação Zod (simplificado para aceitar qualquer username/password)
+// Schema de validação Zod
 const loginSchema = z.object({
-  identifier: z.string().min(1, "Campo obrigatório"),
+  login: z.string().min(1, "Campo obrigatório"),
   password: z.string().min(1, "Campo obrigatório"),
 });
 
@@ -22,12 +22,16 @@ export function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      login: "12951904606", // CPF padrão para teste
+      password: "123456", // Senha padrão para teste
+    },
   });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login({
-        username: data.identifier.trim(),
+        login: data.login.trim(),
         password: data.password,
       });
       // Navigation is handled by useAuth hook
@@ -66,34 +70,34 @@ export function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email/CPF Input */}
+            {/* CPF Input */}
             <div className="space-y-2">
               <label
-                htmlFor="identifier"
+                htmlFor="login"
                 className="block text-sm font-medium text-slate-700"
               >
-                Email ou CPF
+                CPF
               </label>
               <input
-                id="identifier"
+                id="login"
                 type="text"
-                {...register("identifier")}
+                {...register("login")}
                 className={cn(
                   'w-full px-4 py-3 rounded-xl',
                   'bg-slate-50',
                   'border-2',
-                  errors.identifier
+                  errors.login
                     ? 'border-red-400 focus:ring-red-400'
                     : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
                   'text-slate-900 placeholder:text-slate-400',
                   'focus:outline-none focus:ring-2',
                   'transition-all duration-200'
                 )}
-                placeholder="Digite seu email ou CPF"
+                placeholder="Digite seu CPF"
               />
-              {errors.identifier && (
+              {errors.login && (
                 <p className="text-red-400 text-sm mt-1">
-                  {errors.identifier.message}
+                  {errors.login.message}
                 </p>
               )}
             </div>

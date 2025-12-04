@@ -154,7 +154,7 @@ function Dashboard() {
 
           {/* Cards Section - Prioridade 1 */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <CardList showTitle title="Seus Cartões" limit={3} />
+            <CardList showTitle title="Seus Cartões" limit={3} disableFlip={true} />
           </div>
 
           {/* Transactions/Statement - Prioridade 2 */}
