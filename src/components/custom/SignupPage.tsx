@@ -208,34 +208,26 @@ export function SignupPage() {
   }
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -inset-[10px] opacity-50">
-          <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob" />
-          <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000" />
-        </div>
-      </div>
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-slate-50">
 
       {/* Signup card */}
       <div className="relative z-10 w-full max-w-md mx-4 sm:mx-6">
-        <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8 sm:p-12">
+        <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 p-8 sm:p-12">
           {/* Back button */}
           <button
             onClick={handleBack}
-            className="absolute top-6 right-6 p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="absolute top-6 right-6 p-2 rounded-lg hover:bg-slate-100 transition-colors"
             type="button"
           >
-            <ChevronLeft className="w-6 h-6 text-white" />
+            <ChevronLeft className="w-6 h-6 text-slate-600" />
           </button>
 
           {/* Header */}
           <div className="text-left mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
               Cadastrar usuário
             </h1>
-            <p className="text-white/70 text-sm sm:text-base">
+            <p className="text-slate-600 text-sm sm:text-base font-medium">
               Para ativar o seu cartão, faça já o seu cadastro
             </p>
           </div>
@@ -245,13 +237,13 @@ export function SignupPage() {
             <div
               className={cn(
                 'flex-1 h-1 rounded-full transition-colors',
-                currentStep >= 1 ? 'bg-purple-400' : 'bg-white/20'
+                currentStep >= 1 ? 'bg-gradient-to-r from-purple-600 to-pink-600' : 'bg-slate-200'
               )}
             />
             <div
               className={cn(
                 'flex-1 h-1 rounded-full transition-colors',
-                currentStep >= 2 ? 'bg-purple-400' : 'bg-white/20'
+                currentStep >= 2 ? 'bg-gradient-to-r from-purple-600 to-pink-600' : 'bg-slate-200'
               )}
             />
           </div>
@@ -259,13 +251,13 @@ export function SignupPage() {
           {/* Step 1: Criar login */}
           {currentStep === 1 && (
             <form onSubmit={step1Form.handleSubmit(onStep1Submit)} className="space-y-6">
-              <h2 className="text-xl font-semibold text-white mb-4">Criar login</h2>
+              <h2 className="text-xl font-semibold text-slate-800 mb-4">Criar login</h2>
 
               {/* CPF/CNPJ Input */}
               <div className="space-y-2">
                 <label
                   htmlFor="document"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   Digite o seu CPF/CNPJ
                   <span className="text-red-400">*</span>
@@ -281,13 +273,13 @@ export function SignupPage() {
                   }}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step1Form.formState.errors.document
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white placeholder:text-white/50',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200'
                   )}
                   placeholder="Digite aqui"
@@ -303,7 +295,7 @@ export function SignupPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   Digite o seu e-mail
                   <span className="text-red-400">*</span>
@@ -314,13 +306,13 @@ export function SignupPage() {
                   {...step1Form.register('email')}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step1Form.formState.errors.email
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white placeholder:text-white/50',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200'
                   )}
                   placeholder="ex: exemplo@exemplo.com.br"
@@ -336,7 +328,7 @@ export function SignupPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="accountNumber"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   Número da conta
                   <span className="text-red-400">*</span>
@@ -347,13 +339,13 @@ export function SignupPage() {
                   {...step1Form.register('accountNumber')}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step1Form.formState.errors.accountNumber
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white placeholder:text-white/50',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200'
                   )}
                   placeholder="Digite aqui..."
@@ -371,10 +363,10 @@ export function SignupPage() {
                 disabled={step1Form.formState.isSubmitting}
                 className={cn(
                   'w-full py-3 px-4 rounded-xl font-semibold',
-                  'bg-gradient-to-r from-purple-500 to-pink-500',
-                  'text-white shadow-lg shadow-purple-500/50',
-                  'hover:shadow-xl hover:shadow-purple-500/60',
-                  'focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent',
+                  'bg-gradient-to-r from-purple-600 to-pink-600',
+                  'text-white shadow-lg shadow-purple-500/30',
+                  'hover:shadow-xl hover:shadow-purple-500/40',
+                  'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2',
                   'transform transition-all duration-200',
                   'hover:scale-[1.02] active:scale-[0.98]',
                   'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
@@ -388,22 +380,13 @@ export function SignupPage() {
           {/* Step 2: Dados pessoais */}
           {currentStep === 2 && (
             <form onSubmit={step2Form.handleSubmit(onStep2Submit)} className="space-y-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-white">Dados pessoais</h2>
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="text-sm text-white/70 hover:text-white transition-colors"
-                >
-                  Voltar etapa
-                </button>
-              </div>
+              <h2 className="text-xl font-semibold text-slate-800 mb-4">Dados pessoais</h2>
 
               {/* Full Name Input */}
               <div className="space-y-2">
                 <label
                   htmlFor="fullName"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   Nome completo
                   <span className="text-red-400">*</span>
@@ -414,13 +397,13 @@ export function SignupPage() {
                   {...step2Form.register('fullName')}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step2Form.formState.errors.fullName
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white placeholder:text-white/50',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200'
                   )}
                   placeholder="Digite aqui..."
@@ -436,7 +419,7 @@ export function SignupPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="phone"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   Número de celular
                   <span className="text-red-400">*</span>
@@ -452,13 +435,13 @@ export function SignupPage() {
                   }}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step2Form.formState.errors.phone
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white placeholder:text-white/50',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200'
                   )}
                   placeholder="ex: (00) 00000-0000"
@@ -474,7 +457,7 @@ export function SignupPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="cpf"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   CPF
                   <span className="text-red-400">*</span>
@@ -490,13 +473,13 @@ export function SignupPage() {
                   }}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step2Form.formState.errors.cpf
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white placeholder:text-white/50',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200'
                   )}
                   placeholder="000.000.000-00"
@@ -513,7 +496,7 @@ export function SignupPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="birthDate"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   Data de nascimento
                   <span className="text-red-400">*</span>
@@ -529,13 +512,13 @@ export function SignupPage() {
                   }}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step2Form.formState.errors.birthDate
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white placeholder:text-white/50',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200'
                   )}
                   placeholder="ex: 00/00/0000"
@@ -551,7 +534,7 @@ export function SignupPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="gender"
-                  className="block text-sm font-medium text-white/90"
+                  className="block text-sm font-medium text-slate-700"
                 >
                   Gênero
                   <span className="text-red-400">*</span>
@@ -561,13 +544,13 @@ export function SignupPage() {
                   {...step2Form.register('gender')}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
-                    'bg-white/10 backdrop-blur-sm',
-                    'border',
+                    'bg-slate-50',
+                    'border-2',
                     step2Form.formState.errors.gender
                       ? 'border-red-400 focus:ring-red-400'
-                      : 'border-white/20 focus:ring-purple-400',
-                    'text-white',
-                    'focus:outline-none focus:ring-2 focus:border-transparent',
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900',
+                    'focus:outline-none focus:ring-2',
                     'transition-all duration-200',
                     '[&>option]:bg-slate-800 [&>option]:text-white'
                   )}
@@ -591,10 +574,10 @@ export function SignupPage() {
                 disabled={step2Form.formState.isSubmitting}
                 className={cn(
                   'w-full py-3 px-4 rounded-xl font-semibold',
-                  'bg-gradient-to-r from-purple-500 to-pink-500',
-                  'text-white shadow-lg shadow-purple-500/50',
-                  'hover:shadow-xl hover:shadow-purple-500/60',
-                  'focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent',
+                  'bg-gradient-to-r from-purple-600 to-pink-600',
+                  'text-white shadow-lg shadow-purple-500/30',
+                  'hover:shadow-xl hover:shadow-purple-500/40',
+                  'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2',
                   'transform transition-all duration-200',
                   'hover:scale-[1.02] active:scale-[0.98]',
                   'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
@@ -629,7 +612,7 @@ export function SignupPage() {
         </div>
 
         {/* Security badge */}
-        <div className="mt-6 flex items-center justify-center gap-2 text-white/50 text-xs">
+        <div className="mt-6 flex items-center justify-center gap-2 text-slate-500 text-xs">
           <svg
             className="w-4 h-4"
             fill="none"
