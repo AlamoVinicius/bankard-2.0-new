@@ -1,5 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Home, CreditCard, Wallet, Settings, LogOut, X } from 'lucide-react'
+import { Home, CreditCard, Wallet, Settings, LogOut, X, Briefcase } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 
 interface SidebarProps {
@@ -15,6 +15,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     { to: '/', icon: Home, label: 'Início' },
     { to: '/cards', icon: CreditCard, label: 'Cartões' },
     { to: '/accounts', icon: Wallet, label: 'Contas' },
+    { to: '/services', icon: Briefcase, label: 'Serviços' },
     { to: '/settings', icon: Settings, label: 'Configurações' },
   ]
 
@@ -53,10 +54,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-700">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <span className="text-xl font-bold">B</span>
+              <span className="text-xl font-bold">A</span>
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold">Bankard 2.0</h2>
+              <h2 className="text-lg sm:text-xl font-bold">AnyPay</h2>
               <p className="text-xs text-gray-400">Sua conta digital</p>
             </div>
           </div>

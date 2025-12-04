@@ -112,6 +112,36 @@ function formatDate(value: string): string {
   return `${numbers.slice(0, 2)}/${numbers.slice(2, 4)}/${numbers.slice(4)}`
 }
 
+// Função para formatar CEP (XXXXX-XXX)
+function formatCEP(value: string): string {
+  const numbers = value.replace(/\D/g, '').slice(0, 8)
+  if (numbers.length <= 5) return numbers
+  return `${numbers.slice(0, 5)}-${numbers.slice(5)}`
+}
+
+// Função para buscar endereço na API ViaCEP
+async function fetchAddressByCEP(cep: string): Promise<{
+  logradouro: string
+  bairro: string
+  localidade: string
+  uf: string
+} | null> {
+  try {
+    const cleanCEP = cep.replace(/\D/g, '')
+    if (cleanCEP.length !== 8) return null
+
+    const response = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`)
+    const data = await response.json()
+
+    if (data.erro) return null
+
+    return data
+  } catch (error) {
+    console.error('Erro ao buscar CEP:', error)
+    return null
+  }
+}
+
 // Schema para Step 1
 const step1Schema = z.object({
   document: z
@@ -161,13 +191,37 @@ const step2Schema = z.object({
     .min(1, 'Campo obrigatório'),
 })
 
+// Schema para Step 3
+const step3Schema = z.object({
+  cep: z
+    .string()
+    .min(1, 'Campo obrigatório')
+    .regex(/^\d{5}-\d{3}$/, 'Formato inválido. Use XXXXX-XXX'),
+  address: z
+    .string()
+    .min(1, 'Campo obrigatório')
+    .min(5, 'Endereço deve ter no mínimo 5 caracteres'),
+  motherName: z
+    .string()
+    .min(1, 'Campo obrigatório')
+    .min(3, 'Nome da mãe deve ter no mínimo 3 caracteres')
+    .max(100, 'Nome da mãe deve ter no máximo 100 caracteres'),
+  isPoliticallyExposed: z
+    .string()
+    .min(1, 'Campo obrigatório'),
+})
+
 type Step1FormData = z.infer<typeof step1Schema>
 type Step2FormData = z.infer<typeof step2Schema>
+type Step3FormData = z.infer<typeof step3Schema>
 
 export function SignupPage() {
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
   const [step1Data, setStep1Data] = useState<Step1FormData | null>(null)
+  const [step2Data, setStep2Data] = useState<Step2FormData | null>(null)
+  const [isLoadingCEP, setIsLoadingCEP] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   // Form para Step 1
   const step1Form = useForm<Step1FormData>({
@@ -179,28 +233,66 @@ export function SignupPage() {
     resolver: zodResolver(step2Schema),
   })
 
+  // Form para Step 3
+  const step3Form = useForm<Step3FormData>({
+    resolver: zodResolver(step3Schema),
+  })
+
   const onStep1Submit = (data: Step1FormData) => {
     setStep1Data(data)
     setCurrentStep(2)
   }
 
   const onStep2Submit = async (data: Step2FormData) => {
-    // Combina dados dos dois steps
+    setStep2Data(data)
+    setCurrentStep(3)
+  }
+
+  const onStep3Submit = async (data: Step3FormData) => {
+    // Combina dados dos três steps
     const completeData = {
       ...step1Data,
+      ...step2Data,
       ...data,
       timestamp: new Date().toISOString(),
     }
 
-    // Exibe alert com dados formatados
-    window.alert(JSON.stringify(completeData, null, 2))
+    // Simula chamada de API (2 segundos)
+    await new Promise(resolve => setTimeout(resolve, 2000))
 
-    // Aqui você implementaria a lógica de cadastro real
-    // Por exemplo: await authRepository.signup(completeData)
+    // Exibe tela de sucesso
+    setShowSuccess(true)
+
+    // Após 3 segundos, redireciona para login
+    setTimeout(() => {
+      navigate({ to: '/login' })
+    }, 3000)
+
+    // Log dos dados para desenvolvimento
+    console.log('Dados do cadastro:', completeData)
+  }
+
+  const handleCEPChange = async (cep: string) => {
+    const formatted = formatCEP(cep)
+    step3Form.setValue('cep', formatted)
+
+    // Busca endereço quando CEP estiver completo
+    if (formatted.length === 9) {
+      setIsLoadingCEP(true)
+      const addressData = await fetchAddressByCEP(formatted)
+      setIsLoadingCEP(false)
+
+      if (addressData) {
+        const fullAddress = `${addressData.logradouro}, ${addressData.bairro} - ${addressData.localidade}/${addressData.uf}`
+        step3Form.setValue('address', fullAddress)
+      }
+    }
   }
 
   const handleBack = () => {
-    if (currentStep === 2) {
+    if (currentStep === 3) {
+      setCurrentStep(2)
+    } else if (currentStep === 2) {
       setCurrentStep(1)
     } else {
       navigate({ to: '/login' })
@@ -213,14 +305,64 @@ export function SignupPage() {
       {/* Signup card */}
       <div className="relative z-10 w-full max-w-md mx-4 sm:mx-6">
         <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 p-8 sm:p-12">
-          {/* Back button */}
-          <button
-            onClick={handleBack}
-            className="absolute top-6 right-6 p-2 rounded-lg hover:bg-slate-100 transition-colors"
-            type="button"
-          >
-            <ChevronLeft className="w-6 h-6 text-slate-600" />
-          </button>
+          {/* Success Screen */}
+          {showSuccess ? (
+            <div className="text-center py-8">
+              {/* Success Icon */}
+              <div className="mx-auto w-20 h-20 mb-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                <svg
+                  className="w-10 h-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+
+              {/* Success Message */}
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+                Cadastro realizado com sucesso!
+              </h2>
+              <p className="text-slate-600 text-sm sm:text-base mb-8">
+                Sua conta foi criada. Você será redirecionado para o login em instantes...
+              </p>
+
+              {/* Loading Animation */}
+              <div className="flex justify-center">
+                <svg className="animate-spin h-8 w-8 text-purple-600" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Back button */}
+              <button
+                onClick={handleBack}
+                className="absolute top-6 right-6 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                type="button"
+              >
+                <ChevronLeft className="w-6 h-6 text-slate-600" />
+              </button>
 
           {/* Header */}
           <div className="text-left mb-8">
@@ -244,6 +386,12 @@ export function SignupPage() {
               className={cn(
                 'flex-1 h-1 rounded-full transition-colors',
                 currentStep >= 2 ? 'bg-gradient-to-r from-purple-600 to-pink-600' : 'bg-slate-200'
+              )}
+            />
+            <div
+              className={cn(
+                'flex-1 h-1 rounded-full transition-colors',
+                currentStep >= 3 ? 'bg-gradient-to-r from-purple-600 to-pink-600' : 'bg-slate-200'
               )}
             />
           </div>
@@ -609,25 +757,214 @@ export function SignupPage() {
               </button>
             </form>
           )}
+
+          {/* Step 3: Informações adicionais */}
+          {currentStep === 3 && (
+            <form onSubmit={step3Form.handleSubmit(onStep3Submit)} className="space-y-6">
+              <h2 className="text-xl font-semibold text-slate-800 mb-4">Informações adicionais</h2>
+
+              {/* CEP Input */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="cep"
+                  className="block text-sm font-medium text-slate-700"
+                >
+                  CEP
+                  <span className="text-red-400">*</span>
+                </label>
+                <input
+                  id="cep"
+                  type="text"
+                  {...step3Form.register('cep')}
+                  onChange={(e) => handleCEPChange(e.target.value)}
+                  className={cn(
+                    'w-full px-4 py-3 rounded-xl',
+                    'bg-slate-50',
+                    'border-2',
+                    step3Form.formState.errors.cep
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
+                    'transition-all duration-200'
+                  )}
+                  placeholder="00000-000"
+                />
+                {step3Form.formState.errors.cep && (
+                  <p className="text-red-400 text-sm mt-1">
+                    {step3Form.formState.errors.cep.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Address Input */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-slate-700"
+                >
+                  Endereço
+                  <span className="text-red-400">*</span>
+                </label>
+                <input
+                  id="address"
+                  type="text"
+                  {...step3Form.register('address')}
+                  disabled={isLoadingCEP}
+                  className={cn(
+                    'w-full px-4 py-3 rounded-xl',
+                    'bg-slate-50',
+                    'border-2',
+                    step3Form.formState.errors.address
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
+                    'transition-all duration-200',
+                    isLoadingCEP && 'opacity-50 cursor-not-allowed'
+                  )}
+                  placeholder={isLoadingCEP ? 'Buscando endereço...' : 'Digite aqui...'}
+                />
+                {step3Form.formState.errors.address && (
+                  <p className="text-red-400 text-sm mt-1">
+                    {step3Form.formState.errors.address.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Mother's Name Input */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="motherName"
+                  className="block text-sm font-medium text-slate-700"
+                >
+                  Nome da mãe
+                  <span className="text-red-400">*</span>
+                </label>
+                <input
+                  id="motherName"
+                  type="text"
+                  {...step3Form.register('motherName')}
+                  className={cn(
+                    'w-full px-4 py-3 rounded-xl',
+                    'bg-slate-50',
+                    'border-2',
+                    step3Form.formState.errors.motherName
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900 placeholder:text-slate-400',
+                    'focus:outline-none focus:ring-2',
+                    'transition-all duration-200'
+                  )}
+                  placeholder="Digite aqui..."
+                />
+                {step3Form.formState.errors.motherName && (
+                  <p className="text-red-400 text-sm mt-1">
+                    {step3Form.formState.errors.motherName.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Politically Exposed Select */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="isPoliticallyExposed"
+                  className="block text-sm font-medium text-slate-700"
+                >
+                  Pessoa politicamente exposta
+                  <span className="text-red-400">*</span>
+                </label>
+                <select
+                  id="isPoliticallyExposed"
+                  {...step3Form.register('isPoliticallyExposed')}
+                  className={cn(
+                    'w-full px-4 py-3 rounded-xl',
+                    'bg-slate-50',
+                    'border-2',
+                    step3Form.formState.errors.isPoliticallyExposed
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-slate-200 focus:ring-purple-500 focus:border-purple-500',
+                    'text-slate-900',
+                    'focus:outline-none focus:ring-2',
+                    'transition-all duration-200',
+                    '[&>option]:bg-slate-800 [&>option]:text-white'
+                  )}
+                >
+                  <option value="" className="text-white/50">Selecionar uma opção</option>
+                  <option value="sim">Sim</option>
+                  <option value="nao">Não</option>
+                </select>
+                {step3Form.formState.errors.isPoliticallyExposed && (
+                  <p className="text-red-400 text-sm mt-1">
+                    {step3Form.formState.errors.isPoliticallyExposed.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Submit button */}
+              <button
+                type="submit"
+                disabled={step3Form.formState.isSubmitting}
+                className={cn(
+                  'w-full py-3 px-4 rounded-xl font-semibold',
+                  'bg-gradient-to-r from-purple-600 to-pink-600',
+                  'text-white shadow-lg shadow-purple-500/30',
+                  'hover:shadow-xl hover:shadow-purple-500/40',
+                  'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2',
+                  'transform transition-all duration-200',
+                  'hover:scale-[1.02] active:scale-[0.98]',
+                  'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+                )}
+              >
+                {step3Form.formState.isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Cadastrando...
+                  </span>
+                ) : (
+                  'FINALIZAR CADASTRO'
+                )}
+              </button>
+            </form>
+          )}
+            </>
+          )}
         </div>
 
         {/* Security badge */}
-        <div className="mt-6 flex items-center justify-center gap-2 text-slate-500 text-xs">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-            />
-          </svg>
-          <span>Seus dados estão protegidos e criptografados</span>
-        </div>
+        {!showSuccess && (
+          <div className="mt-6 flex items-center justify-center gap-2 text-slate-500 text-xs">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            <span>Seus dados estão protegidos e criptografados</span>
+          </div>
+        )}
       </div>
     </div>
   )

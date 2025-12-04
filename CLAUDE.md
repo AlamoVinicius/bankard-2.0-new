@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Bankard 2.0 is a simplified banking application frontend built with React (Vite) and TypeScript. The project focuses on card and account management with a mobile-first, fully responsive design. This is a simplified version designed for rapid development (approximately 1 day timeline).
+AnyPay is a simplified banking application frontend built with React (Vite) and TypeScript. The project focuses on card and account management with a mobile-first, fully responsive design. This is a simplified version designed for rapid development (approximately 1 day timeline).
 
 **Core Features:**
 - Card listing and management

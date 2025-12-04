@@ -197,7 +197,7 @@ export function CardItem({ card, className, isSelected = false }: CardItemProps)
                 {/* Informações de segurança */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
                   <p className="text-[10px] sm:text-xs opacity-80 leading-relaxed">
-                    Este cartão é propriedade do Bankard 2.0 e deve ser
+                    Este cartão é propriedade do AnyPay e deve ser
                     devolvido se solicitado. O uso não autorizado é proibido por
                     lei.
                   </p>
@@ -214,7 +214,7 @@ export function CardItem({ card, className, isSelected = false }: CardItemProps)
                 <div className="flex items-center justify-center gap-2 opacity-60">
                   <CreditCardIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   <span className="text-xs sm:text-sm font-semibold">
-                    Bankard 2.0
+                    AnyPay
                   </span>
                 </div>
               </div>

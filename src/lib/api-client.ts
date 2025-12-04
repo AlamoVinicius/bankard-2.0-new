@@ -3,7 +3,7 @@ import { ApiError, ApiErrors } from "./errors";
 import { useAuthStore } from "@/stores/authStore";
 
 /**
- * Axios instance configured for the Bankard API
+ * Axios instance configured for the AnyPay API
  */
 export const apiClient = axios.create({
   baseURL:
