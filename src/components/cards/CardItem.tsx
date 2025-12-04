@@ -1,17 +1,23 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import type { Card } from '@/models/Card'
-import { Wifi, CreditCard as CreditCardIcon, Lock, RotateCcw } from 'lucide-react'
+import { Wifi, CreditCard as CreditCardIcon, Lock, RotateCcw, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useCardBalance } from '@/hooks/useCardBalance'
+import { formatBalance } from '@/models/Account'
 
 interface CardItemProps {
   card: Card
   className?: string
   isSelected?: boolean
+  showBalance?: boolean
 }
 
-export function CardItem({ card, className, isSelected = false }: CardItemProps) {
+export function CardItem({ card, className, isSelected = false, showBalance = true }: CardItemProps) {
   const [isFlipped, setIsFlipped] = useState(false)
+
+  // Busca o saldo do cartão usando o hook
+  const { balance, isLoading: isLoadingBalance } = useCardBalance(card)
 
   // Define gradientes baseado no tipo de cartão
   const gradients = {
@@ -94,6 +100,29 @@ export function CardItem({ card, className, isSelected = false }: CardItemProps)
                 )}
               </div>
             </div>
+
+            {/* Saldo disponível */}
+            {showBalance && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
+                <p className="text-[10px] sm:text-xs opacity-80 mb-1">
+                  Saldo disponível
+                </p>
+                {isLoadingBalance ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-sm sm:text-base">Carregando...</span>
+                  </div>
+                ) : balance !== undefined ? (
+                  <p className="text-xl sm:text-2xl font-bold">
+                    {formatBalance(balance)}
+                  </p>
+                ) : (
+                  <p className="text-sm sm:text-base opacity-70">
+                    Não disponível
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Chip do cartão */}
             <div className="flex items-center gap-4">

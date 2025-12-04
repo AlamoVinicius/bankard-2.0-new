@@ -2,6 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { CreditCard, TrendingUp, DollarSign, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCard } from '@/hooks/useCard'
+import { useTotalBalance } from '@/hooks/useTotalBalance'
+import { formatBalance } from '@/models/Account'
 import { ErrorAlert } from '@/components/ui/ErrorAlert'
 import { CardList } from '@/components/cards'
 import { TransactionList } from '@/components/transactions/TransactionList'
@@ -19,6 +21,9 @@ function Dashboard() {
 
   // React Query handles automatic fetching when document is provided
   const { availableCards, isLoading, error, refetch } = useCard(DEFAULT_DOCUMENT)
+
+  // Calcula o saldo total de todos os cartões
+  const { totalBalance, isLoading: isLoadingBalance } = useTotalBalance(availableCards)
 
   // Modal state
   const [isActivateModalOpen, setIsActivateModalOpen] = useState(false)
@@ -56,7 +61,8 @@ function Dashboard() {
   const stats = [
     {
       title: 'Saldo Total',
-      value: 'R$ 12.450,00', // TODO: Calculate from cards/accounts
+      subtitle: 'Soma de todos os cartões ativos',
+      value: isLoadingBalance ? 'Carregando...' : formatBalance(totalBalance),
       icon: DollarSign,
       change: '+12.5%',
       trend: 'up' as const,
@@ -134,6 +140,11 @@ function Dashboard() {
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
                   {stat.title}
                 </p>
+                {'subtitle' in stat && (
+                  <p className="text-xs text-gray-500 dark:text-gray-500 mb-2">
+                    {stat.subtitle}
+                  </p>
+                )}
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
                   {stat.value}
                 </p>
@@ -141,7 +152,17 @@ function Dashboard() {
             ))}
           </div>
 
-          {/* Quick actions */}
+          {/* Cards Section - Prioridade 1 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <CardList showTitle title="Seus Cartões" limit={3} />
+          </div>
+
+          {/* Transactions/Statement - Prioridade 2 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <TransactionList limit={5} />
+          </div>
+
+          {/* Quick actions - Movido para o final */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Ações Rápidas
@@ -175,16 +196,6 @@ function Dashboard() {
                 </span>
               </button>
             </div>
-          </div>
-
-          {/* Cards Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <CardList showTitle title="Seus Cartões" limit={3} />
-          </div>
-
-          {/* Transactions/Statement */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <TransactionList limit={5} />
           </div>
         </>
       )}
