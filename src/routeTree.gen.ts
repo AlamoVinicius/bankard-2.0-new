@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as BillPaymentRouteImport } from './routes/bill-payment'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedCardsIndexRouteImport } from './routes/_authenticated/cards/index'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -43,12 +49,14 @@ const AuthenticatedCardsIndexRoute = AuthenticatedCardsIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/bill-payment': typeof BillPaymentRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/': typeof AuthenticatedIndexRoute
   '/cards': typeof AuthenticatedCardsIndexRoute
 }
 export interface FileRoutesByTo {
   '/bill-payment': typeof BillPaymentRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/': typeof AuthenticatedIndexRoute
   '/cards': typeof AuthenticatedCardsIndexRoute
 }
@@ -57,19 +65,21 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/bill-payment': typeof BillPaymentRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/cards/': typeof AuthenticatedCardsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/bill-payment' | '/login' | '/' | '/cards'
+  fullPaths: '/bill-payment' | '/login' | '/signup' | '/' | '/cards'
   fileRoutesByTo: FileRoutesByTo
-  to: '/bill-payment' | '/login' | '/' | '/cards'
+  to: '/bill-payment' | '/login' | '/signup' | '/' | '/cards'
   id:
     | '__root__'
     | '/_authenticated'
     | '/bill-payment'
     | '/login'
+    | '/signup'
     | '/_authenticated/'
     | '/_authenticated/cards/'
   fileRoutesById: FileRoutesById
@@ -78,10 +88,18 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   BillPaymentRoute: typeof BillPaymentRoute
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -138,6 +156,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   BillPaymentRoute: BillPaymentRoute,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

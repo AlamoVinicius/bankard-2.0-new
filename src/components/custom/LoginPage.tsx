@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
+import { Link } from '@tanstack/react-router'
 
 // Função para validar CPF
 function isValidCPF(cpf: string): boolean {
@@ -228,12 +229,12 @@ export function LoginPage() {
           <div className="mt-8 text-center">
             <p className="text-white/70 text-sm">
               Não tem uma conta?{' '}
-              <button
-                type="button"
+              <Link
+                to="/signup"
                 className="text-purple-300 hover:text-purple-200 font-semibold transition-colors"
               >
                 Criar conta
-              </button>
+              </Link>
             </p>
           </div>
         </div>
