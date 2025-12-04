@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { ApiError, ApiErrors } from './errors'
+import { useAuthStore } from '@/stores/authStore'
 
 /**
  * Axios instance configured for the Bankard API
@@ -13,11 +14,12 @@ export const apiClient = axios.create({
 })
 
 /**
- * Request interceptor - Add auth token if available
+ * Request interceptor - Add auth token from Zustand store
  */
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('auth_token')
+    // Get token from Zustand store
+    const token = useAuthStore.getState().token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -56,10 +58,9 @@ apiClient.interceptors.response.use(
         )
 
       case 401:
-        // TODO: Uncomment when authentication is implemented
-        // Clear token and redirect to login
-        // localStorage.removeItem('auth_token')
-        // window.location.href = '/login'
+        // Clear token from store and redirect to login
+        useAuthStore.getState().clearAuth()
+        window.location.href = '/login'
         return Promise.reject(ApiErrors.unauthorized())
 
       case 403:

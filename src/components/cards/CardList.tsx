@@ -2,6 +2,7 @@ import { useCard } from '@/hooks/useCard'
 import { CardItem } from './CardItem'
 import { ErrorAlert } from '@/components/ui/ErrorAlert'
 import { Loader2 } from 'lucide-react'
+import { useCardStore } from '@/stores/cardStore'
 
 interface CardListProps {
   /**
@@ -49,10 +50,16 @@ export function CardList({
   className = '',
   limit,
 }: CardListProps) {
-  const { availableCards, isLoading, error, refetch } = useCard()
+  const { availableCards, isLoading, error, refetch, selectCard } = useCard()
+  const { selectedCard } = useCardStore()
 
   // Limit cards if specified
   const displayCards = limit ? availableCards.slice(0, limit) : availableCards
+
+  // Handle card selection
+  const handleSelectCard = (card: typeof availableCards[0]) => {
+    selectCard(card)
+  }
 
   return (
     <div className={className}>
@@ -121,7 +128,16 @@ export function CardList({
           "
         >
           {displayCards.map((card) => (
-            <CardItem key={card.cardId} card={card} />
+            <div
+              key={card.cardId}
+              onClick={() => handleSelectCard(card)}
+              className="cursor-pointer"
+            >
+              <CardItem
+                card={card}
+                isSelected={selectedCard?.cardId === card.cardId}
+              />
+            </div>
           ))}
         </div>
       )}

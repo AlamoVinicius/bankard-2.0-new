@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils'
 interface CardItemProps {
   card: Card
   className?: string
+  isSelected?: boolean
 }
 
-export function CardItem({ card, className }: CardItemProps) {
+export function CardItem({ card, className, isSelected = false }: CardItemProps) {
   const [isFlipped, setIsFlipped] = useState(false)
 
   // Define gradientes baseado no tipo de cartão
@@ -25,10 +26,15 @@ export function CardItem({ card, className }: CardItemProps) {
 
   // Define o status visual
   const isBlocked = card.status === 'BLOCKED' || card.stage === 'LOCKED'
-  const needsActivation = card.stage === 'UNLOCKED_NOT_CODE'
 
   return (
-    <div className={cn('relative w-full aspect-[1.586/1]', className)}>
+    <div
+      className={cn(
+        'relative w-full aspect-[1.586/1] transition-all duration-200',
+        isSelected && 'ring-4 ring-purple-500 ring-offset-2 ring-offset-background rounded-2xl',
+        className
+      )}
+    >
       {/* Flip container */}
       <motion.div
         className="relative w-full h-full"
@@ -128,22 +134,6 @@ export function CardItem({ card, className }: CardItemProps) {
                 </div>
               </div>
             </div>
-
-            {/* Badge de status */}
-            {(isBlocked || needsActivation) && (
-              <div className="absolute top-4 left-1/2 -translate-x-1/2">
-                <div
-                  className={cn(
-                    'px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md',
-                    isBlocked
-                      ? 'bg-red-500/80 text-white'
-                      : 'bg-yellow-500/80 text-gray-900'
-                  )}
-                >
-                  {isBlocked ? 'Bloqueado' : 'Ativar Cartão'}
-                </div>
-              </div>
-            )}
 
             {/* Logo marca/bandeira */}
             <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 opacity-30">

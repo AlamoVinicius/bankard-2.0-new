@@ -2,85 +2,42 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/hooks/useAuth'
 
-// Função para validar CPF
-function isValidCPF(cpf: string): boolean {
-  // Remove caracteres não numéricos
-  cpf = cpf.replace(/\D/g, '')
-
-  // Verifica se tem 11 dígitos
-  if (cpf.length !== 11) return false
-
-  // Verifica se todos os dígitos são iguais
-  if (/^(\d)\1+$/.test(cpf)) return false
-
-  // Valida primeiro dígito verificador
-  let sum = 0
-  for (let i = 0; i < 9; i++) {
-    sum += parseInt(cpf.charAt(i)) * (10 - i)
-  }
-  let digit = 11 - (sum % 11)
-  if (digit >= 10) digit = 0
-  if (digit !== parseInt(cpf.charAt(9))) return false
-
-  // Valida segundo dígito verificador
-  sum = 0
-  for (let i = 0; i < 10; i++) {
-    sum += parseInt(cpf.charAt(i)) * (11 - i)
-  }
-  digit = 11 - (sum % 11)
-  if (digit >= 10) digit = 0
-  if (digit !== parseInt(cpf.charAt(10))) return false
-
-  return true
-}
-
-// Schema de validação Zod
+// Schema de validação Zod (simplificado para aceitar qualquer username/password)
 const loginSchema = z.object({
   identifier: z
     .string()
-    .min(1, 'Campo obrigatório')
-    .refine(
-      (value) => {
-        // Remove espaços
-        const trimmed = value.trim()
-        // Verifica se é email válido
-        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
-        // Verifica se é CPF válido
-        const isCPF = isValidCPF(trimmed)
-        return isEmail || isCPF
-      },
-      {
-        message: 'Digite um email válido ou CPF válido',
-      }
-    ),
+    .min(1, 'Campo obrigatório'),
   password: z
     .string()
-    .min(6, 'A senha deve ter no mínimo 6 caracteres')
-    .max(100, 'A senha deve ter no máximo 100 caracteres'),
+    .min(1, 'Campo obrigatório'),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
 
 export function LoginPage() {
+  const { login, isLoggingIn, loginError } = useAuth()
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   })
 
   const onSubmit = async (data: LoginFormData) => {
-    // Formata os dados para exibição
-    const formattedData = {
-      identifier: data.identifier.trim(),
-      password: data.password,
-      timestamp: new Date().toISOString(),
+    try {
+      await login({
+        username: data.identifier.trim(),
+        password: data.password,
+      })
+      // Navigation is handled by useAuth hook
+    } catch (error) {
+      // Error is displayed via ErrorAlert below
+      console.error('Login failed:', error)
     }
-
-    // Exibe alert com dados formatados em JSON
-    window.alert(JSON.stringify(formattedData, null, 2))
   }
 
   return (
@@ -106,6 +63,15 @@ export function LoginPage() {
               Sua conta digital segura
             </p>
           </div>
+
+          {/* Error Display */}
+          {loginError && (
+            <div className="mb-4 p-4 rounded-xl bg-red-500/20 border border-red-400/50 backdrop-blur-sm">
+              <p className="text-red-300 text-sm">
+                {loginError instanceof Error ? loginError.message : 'Erro ao fazer login. Tente novamente.'}
+              </p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -186,7 +152,7 @@ export function LoginPage() {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isLoggingIn}
               className={cn(
                 'w-full py-3 px-4 rounded-xl font-semibold',
                 'bg-gradient-to-r from-purple-500 to-pink-500',
@@ -198,7 +164,7 @@ export function LoginPage() {
                 'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
               )}
             >
-              {isSubmitting ? (
+              {isLoggingIn ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                     <circle

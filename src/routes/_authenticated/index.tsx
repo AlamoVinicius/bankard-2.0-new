@@ -3,6 +3,7 @@ import { CreditCard, TrendingUp, DollarSign, Loader2 } from 'lucide-react'
 import { useCard } from '@/hooks/useCard'
 import { ErrorAlert } from '@/components/ui/ErrorAlert'
 import { CardList } from '@/components/cards'
+import { TransactionList } from '@/components/transactions/TransactionList'
 
 export const Route = createFileRoute('/_authenticated/')({
   component: Dashboard,
@@ -142,34 +143,9 @@ function Dashboard() {
             <CardList showTitle title="Seus Cartões" limit={3} />
           </div>
 
-          {/* Recent activity placeholder */}
+          {/* Transactions/Statement */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Atividades Recentes
-            </h3>
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
-                >
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    {i}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      Transação #{i}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Há {i} hora{i > 1 ? 's' : ''}
-                    </p>
-                  </div>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    R$ {(Math.random() * 1000).toFixed(2)}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <TransactionList limit={5} />
           </div>
         </>
       )}
