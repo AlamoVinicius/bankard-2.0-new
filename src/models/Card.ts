@@ -39,6 +39,15 @@ export interface Card {
 }
 
 /**
+ * Card com informações de saldo (enriquecido)
+ * Usado quando precisamos exibir o cartão junto com seu saldo
+ */
+export interface CardWithBalance extends Card {
+  balance?: number // Saldo disponível em centavos
+  balanceLoading?: boolean // Indica se o saldo está sendo carregado
+}
+
+/**
  * DTO para criação de cartão
  */
 export interface CreateCardDTO {
