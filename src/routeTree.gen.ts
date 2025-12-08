@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as BillPaymentRouteImport } from './routes/bill-payment'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedServicesIndexRouteImport } from './routes/_authenticated/services/index'
 import { Route as AuthenticatedCardsIndexRouteImport } from './routes/_authenticated/cards/index'
 import { Route as AuthenticatedBenefitsIndexRouteImport } from './routes/_authenticated/benefits/index'
@@ -44,6 +45,12 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSettingsIndexRoute =
+  AuthenticatedSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedServicesIndexRoute =
   AuthenticatedServicesIndexRouteImport.update({
     id: '/services/',
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/benefits': typeof AuthenticatedBenefitsIndexRoute
   '/cards': typeof AuthenticatedCardsIndexRoute
   '/services': typeof AuthenticatedServicesIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/bill-payment': typeof BillPaymentRoute
@@ -95,6 +103,7 @@ export interface FileRoutesByTo {
   '/benefits': typeof AuthenticatedBenefitsIndexRoute
   '/cards': typeof AuthenticatedCardsIndexRoute
   '/services': typeof AuthenticatedServicesIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -108,6 +117,7 @@ export interface FileRoutesById {
   '/_authenticated/benefits/': typeof AuthenticatedBenefitsIndexRoute
   '/_authenticated/cards/': typeof AuthenticatedCardsIndexRoute
   '/_authenticated/services/': typeof AuthenticatedServicesIndexRoute
+  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/benefits'
     | '/cards'
     | '/services'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/bill-payment'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/benefits'
     | '/cards'
     | '/services'
+    | '/settings'
   id:
     | '__root__'
     | '/_authenticated'
@@ -144,6 +156,7 @@ export interface FileRouteTypes {
     | '/_authenticated/benefits/'
     | '/_authenticated/cards/'
     | '/_authenticated/services/'
+    | '/_authenticated/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings/': {
+      id: '/_authenticated/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/services/': {
@@ -235,6 +255,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedBenefitsIndexRoute: typeof AuthenticatedBenefitsIndexRoute
   AuthenticatedCardsIndexRoute: typeof AuthenticatedCardsIndexRoute
   AuthenticatedServicesIndexRoute: typeof AuthenticatedServicesIndexRoute
+  AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -246,6 +267,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedBenefitsIndexRoute: AuthenticatedBenefitsIndexRoute,
   AuthenticatedCardsIndexRoute: AuthenticatedCardsIndexRoute,
   AuthenticatedServicesIndexRoute: AuthenticatedServicesIndexRoute,
+  AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

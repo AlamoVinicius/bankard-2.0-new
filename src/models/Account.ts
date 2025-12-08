@@ -25,6 +25,38 @@ export interface Account {
 }
 
 /**
+ * Conta simples retornada pelo endpoint /v1/account
+ * GET /v1/account
+ */
+export interface AccountListItem {
+  account: number // Número da conta COM dígito verificador
+  programId: number
+  lastFourDigits: string // Últimos 4 dígitos do cartão
+}
+
+/**
+ * Saldo disponível de uma conta
+ * GET /v1/account/availables
+ */
+export interface AccountAvailable {
+  account: number // Número da conta COM dígito verificador
+  available: number // Saldo disponível em decimal
+  updatedAt: string | null // Data/hora da última atualização (ISO 8601)
+}
+
+/**
+ * Response paginado de saldos disponíveis
+ * GET /v1/account/availables
+ */
+export interface AccountAvailablesResponse {
+  totalAvailable: number // Soma total dos saldos
+  accounts: AccountAvailable[]
+  totalCount: number // Total de registros (para paginação)
+  page: number // Página atual
+  pageSize: number // Itens por página
+}
+
+/**
  * Helper: Formata o saldo para exibição em reais
  * @param balance - Valor em reais (ex: 8520 = R$ 8.520,00)
  */

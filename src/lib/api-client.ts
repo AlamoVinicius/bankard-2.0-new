@@ -1,13 +1,21 @@
 import axios, { AxiosError } from "axios";
 import { ApiError, ApiErrors } from "./errors";
 import { useAuthStore } from "@/stores/authStore";
+import { useMockStore } from "@/stores/mockStore";
+
+/**
+ * Get API base URL from store or environment
+ */
+export function getApiBaseUrl(): string {
+  const { apiUrl } = useMockStore.getState();
+  return apiUrl || import.meta.env.VITE_API_BASE_URL || "https://api-bifrost-hml.acgsa.com.br";
+}
 
 /**
  * Axios instance configured for the AnyPay API
+ * Base URL is dynamically obtained from mockStore
  */
 export const apiClient = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_BASE_URL || "https://api-bifrost-hml.acgsa.com.br",
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
@@ -15,10 +23,13 @@ export const apiClient = axios.create({
 });
 
 /**
- * Request interceptor - Add auth token from Zustand store
+ * Request interceptor - Add auth token and dynamic base URL from Zustand store
  */
 apiClient.interceptors.request.use(
   (config) => {
+    // Set dynamic base URL
+    config.baseURL = getApiBaseUrl();
+
     // Get token from Zustand store
     const token = useAuthStore.getState().token;
     if (token) {

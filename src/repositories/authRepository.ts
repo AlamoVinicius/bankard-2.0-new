@@ -1,27 +1,45 @@
 import axios from 'axios'
 import type { LoginRequest, AuthResponse } from '@/models/Auth'
+import { mockAuthResponse, simulateDelay } from '@/lib/mockData'
+import { getApiBaseUrl } from '@/lib/api-client'
 
 /**
  * AuthRepository
  * Handles authentication API calls
  *
- * Login endpoint uses localhost, other endpoints use the base URL from env
+ * Supports mock mode for development
+ * Uses dynamic API URL from configuration
  */
 class AuthRepository {
-  private readonly loginBaseUrl = 'https://localhost:7162'
+  /**
+   * Get base URL dynamically from configuration
+   */
+  private getBaseUrl(): string {
+    return getApiBaseUrl()
+  }
 
   /**
-   * Login user with CPF and password
-   * POST /v1/Auth/Login
+   * Login user with CPF/email and password
+   * POST /v1/auth/login
+   *
+   * @param credentials - Login credentials (login and password)
+   * @param useMock - If true, returns mock data instead of calling API
    */
-  async login(credentials: LoginRequest): Promise<AuthResponse> {
+  async login(credentials: LoginRequest, useMock: boolean = false): Promise<AuthResponse> {
+    // Mock mode
+    if (useMock) {
+      await simulateDelay(1000)
+      return mockAuthResponse
+    }
+
+    // Real API call
     try {
       const response = await axios.post<AuthResponse>(
-        `${this.loginBaseUrl}/v1/Auth/Login`,
+        `${this.getBaseUrl()}/v1/auth/login`,
         credentials,
         {
           headers: {
-            'accept': 'text/plain',
+            'accept': 'application/json',
             'Content-Type': 'application/json',
           },
         }
@@ -29,8 +47,30 @@ class AuthRepository {
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        const errorData = error.response?.data
+
+        // Handle specific error codes from API
+        if (errorData?.errorCode) {
+          switch (errorData.errorCode) {
+            case 40001:
+              throw new Error('Usuário não encontrado')
+            case 40002:
+              throw new Error('CPF inválido')
+            case 40003:
+              throw new Error('Usuário inativo')
+            case 40004:
+              throw new Error('Usuário bloqueado por excesso de tentativas')
+            case 40005:
+              throw new Error('Email não confirmado')
+            case 40006:
+              throw new Error('Cliente não associado ao usuário')
+            default:
+              throw new Error(errorData.error || 'Erro ao fazer login')
+          }
+        }
+
         throw new Error(
-          error.response?.data?.message ||
+          errorData?.error ||
           'Erro ao fazer login. Verifique suas credenciais.'
         )
       }

@@ -1,18 +1,22 @@
 import { useQueries } from '@tanstack/react-query'
 import { accountRepository } from '@/repositories/accountRepository'
 import { accountKeys } from '@/services/accountService'
+import { useMockStore } from '@/stores/mockStore'
 import type { Card } from '@/models/Card'
 
 /**
  * Hook para calcular o saldo total de múltiplos cartões
  * Faz queries paralelas para cada cartão e soma os saldos
+ * Supports mock mode for development
  */
 export function useTotalBalance(cards: Card[] | undefined) {
+  const { isMockEnabled } = useMockStore()
+
   // Criar queries para cada cartão
   const balanceQueries = useQueries({
     queries: (cards || []).map((card) => ({
       queryKey: accountKeys.balance(card.account),
-      queryFn: () => accountRepository.getBalance(card.account),
+      queryFn: () => accountRepository.getBalance(card.account, isMockEnabled),
       enabled: !!card.account,
       staleTime: 2 * 60 * 1000, // 2 minutes
       retry: 1,

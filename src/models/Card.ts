@@ -1,12 +1,18 @@
 /**
- * Status do cartão
+ * Status do cartão - retornado pela API v1
  */
-export type CardStatus = 'NORMAL' | 'BLOCKED' | 'CANCELLED' | 'EXPIRED'
+export type CardStatus = 'Active' | 'Blocked' | 'Cancelled' | 'Expired' | 'NORMAL' | 'BLOCKED' | 'CANCELLED' | 'EXPIRED'
 
 /**
- * Estágio/Estado do cartão
+ * Estágio/Estado do cartão - retornado pela API v1
  */
 export type CardStage =
+  | 'Normal'
+  | 'Locked'
+  | 'Blocked'
+  | 'Active'
+  | 'Inactive'
+  | 'PendingActivation'
   | 'UNLOCKED_NOT_CODE'
   | 'UNLOCKED_CODE'
   | 'LOCKED'
@@ -16,9 +22,9 @@ export type CardStage =
   | 'PENDING_ACTIVATION'
 
 /**
- * Tipo do cartão
+ * Tipo do cartão - retornado pela API v1
  */
-export type CardType = 'PLASTIC' | 'VIRTUAL'
+export type CardType = 'Credit' | 'Debit' | 'Unknown' | 'PLASTIC' | 'VIRTUAL'
 
 /**
  * Modelo de dados do cartão - baseado na resposta da API
@@ -74,10 +80,21 @@ export interface ActivateCardDTO {
 }
 
 /**
- * Helper: Verifica se o cartão está ativo (NORMAL)
+ * Response paginado de cartões
+ * GET /v1/card
+ */
+export interface CardListResponse {
+  items: Card[]
+  totalCount: number // Total de registros disponíveis
+  page: number // Página atual
+  pageSize: number // Itens por página
+}
+
+/**
+ * Helper: Verifica se o cartão está ativo (NORMAL ou Active)
  */
 export function isCardActive(card: Card): boolean {
-  return card.status === 'NORMAL'
+  return card.status === 'NORMAL' || card.status === 'Active'
 }
 
 /**

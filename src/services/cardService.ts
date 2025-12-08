@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { cardRepository } from '@/repositories/cardRepository'
+import { useMockStore } from '@/stores/mockStore'
 import type { Card } from '@/models/Card'
 
 /**
@@ -14,9 +15,11 @@ export const cardKeys = {
 /**
  * Card Service
  * TanStack Query wrappers for card-related operations
+ * Supports mock mode for development
  */
 export function useCardService() {
   const queryClient = useQueryClient()
+  const { isMockEnabled } = useMockStore()
 
   /**
    * Query: Get cards by document (CPF)
@@ -25,7 +28,7 @@ export function useCardService() {
   const useCardsByDocument = (document: string, enabled = true) => {
     return useQuery({
       queryKey: cardKeys.byDocument(document),
-      queryFn: () => cardRepository.getByDocument(document),
+      queryFn: () => cardRepository.getByDocument(document, isMockEnabled),
       enabled: !!document && enabled,
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: 1,
@@ -38,7 +41,7 @@ export function useCardService() {
   const useCardById = (cardId: number, enabled = true) => {
     return useQuery({
       queryKey: cardKeys.detail(cardId),
-      queryFn: () => cardRepository.getById(cardId),
+      queryFn: () => cardRepository.getById(cardId, isMockEnabled),
       enabled: !!cardId && enabled,
       staleTime: 5 * 60 * 1000,
       retry: 1,
@@ -49,7 +52,7 @@ export function useCardService() {
    * Mutation: Block card
    */
   const blockCardMutation = useMutation({
-    mutationFn: (cardId: number) => cardRepository.blockCard(cardId),
+    mutationFn: (cardId: number) => cardRepository.blockCard(cardId, isMockEnabled),
     onSuccess: (_, cardId) => {
       // Invalidate queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: cardKeys.detail(cardId) })
@@ -61,7 +64,7 @@ export function useCardService() {
    * Mutation: Unblock card
    */
   const unblockCardMutation = useMutation({
-    mutationFn: (cardId: number) => cardRepository.unblockCard(cardId),
+    mutationFn: (cardId: number) => cardRepository.unblockCard(cardId, isMockEnabled),
     onSuccess: (_, cardId) => {
       // Invalidate queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: cardKeys.detail(cardId) })

@@ -20,10 +20,16 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
   const { balance, isLoading: isLoadingBalance } = useCardBalance(card)
 
   // Define gradientes baseado no tipo de cartão
-  const gradients = {
+  const gradients: Record<string, string> = {
     PLASTIC: 'bg-gradient-to-br from-purple-600 via-purple-800 to-indigo-900',
     VIRTUAL: 'bg-gradient-to-br from-pink-600 via-rose-700 to-red-800',
+    Credit: 'bg-gradient-to-br from-blue-600 via-blue-800 to-indigo-900',
+    Debit: 'bg-gradient-to-br from-green-600 via-green-800 to-emerald-900',
+    Unknown: 'bg-gradient-to-br from-gray-600 via-gray-800 to-slate-900',
   }
+
+  // Pega o gradiente do cartão ou usa um padrão
+  const cardGradient = gradients[card.type] || 'bg-gradient-to-br from-purple-600 via-purple-800 to-indigo-900'
 
   // Formata a data de expiração
   const expirationDate = new Date(card.expirationDate)
@@ -54,7 +60,7 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
         <motion.div
           className={cn(
             'absolute inset-0 rounded-2xl shadow-2xl overflow-hidden cursor-pointer',
-            gradients[card.type]
+            cardGradient
           )}
           initial={false}
           animate={{
@@ -180,7 +186,7 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
         <motion.div
           className={cn(
             'absolute inset-0 rounded-2xl shadow-2xl overflow-hidden cursor-pointer',
-            gradients[card.type]
+            cardGradient
           )}
           initial={false}
           animate={{

@@ -14,10 +14,19 @@ export interface LoginRequest {
 
 /**
  * Auth response from API
+ * POST /v1/auth/login
  */
 export interface AuthResponse {
   token: string
-  expiresAt?: string // Optional expiration date
+  expiresAt: string // ISO 8601 datetime
+}
+
+/**
+ * Auth error response from API
+ */
+export interface AuthErrorResponse {
+  error: string
+  errorCode?: number
 }
 
 /**
