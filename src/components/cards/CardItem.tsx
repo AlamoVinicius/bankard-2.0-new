@@ -83,9 +83,9 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
           </div>
 
           {/* Conteúdo do cartão - FRENTE */}
-          <div className="relative h-full p-6 sm:p-8 flex flex-col justify-between text-white">
+          <div className="relative h-full p-5 sm:p-6 flex flex-col text-white">
             {/* Cabeçalho */}
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between mb-3 sm:mb-4">
               <div>
                 <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">
                   {card.type === 'VIRTUAL' ? 'Cartão Virtual' : 'Cartão Físico'}
@@ -109,7 +109,7 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
 
             {/* Saldo disponível */}
             {showBalance && (
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-3.5 mb-3 sm:mb-4">
                 <p className="text-[10px] sm:text-xs opacity-80 mb-1">
                   Saldo disponível
                 </p>
@@ -119,7 +119,7 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
                     <span className="text-sm sm:text-base">Carregando...</span>
                   </div>
                 ) : balance !== undefined ? (
-                  <p className="text-xl sm:text-2xl font-bold">
+                  <p className="text-lg sm:text-xl font-bold">
                     {formatBalance(balance)}
                   </p>
                 ) : (
@@ -131,39 +131,43 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
             )}
 
             {/* Chip do cartão */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-10 sm:w-14 sm:h-12 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-lg shadow-lg flex items-center justify-center">
-                <div className="w-8 h-6 sm:w-10 sm:h-8 border-2 border-yellow-600/40 rounded" />
+            <div className="flex items-center gap-4 mb-3 sm:mb-4">
+              <div className="w-11 h-9 sm:w-12 sm:h-10 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-lg shadow-lg flex items-center justify-center">
+                <div className="w-7 h-5 sm:w-8 sm:h-6 border-2 border-yellow-600/40 rounded" />
               </div>
             </div>
 
-            {/* Número do cartão */}
-            <div className="space-y-4 sm:space-y-6">
+            {/* Espaçador flexível para empurrar o conteúdo inferior */}
+            <div className="flex-1 min-h-0" />
+
+            {/* Seção inferior - Número e Detalhes */}
+            <div className="space-y-3 sm:space-y-4">
+              {/* Número do cartão */}
               <div className="flex items-center gap-2 sm:gap-3 font-mono">
-                <span className="text-base sm:text-xl tracking-wider">••••</span>
-                <span className="text-base sm:text-xl tracking-wider">••••</span>
-                <span className="text-base sm:text-xl tracking-wider">••••</span>
-                <span className="text-xl sm:text-2xl font-bold tracking-wider">
+                <span className="text-sm sm:text-lg tracking-wider">••••</span>
+                <span className="text-sm sm:text-lg tracking-wider">••••</span>
+                <span className="text-sm sm:text-lg tracking-wider">••••</span>
+                <span className="text-lg sm:text-xl font-bold tracking-wider">
                   {card.last4Digits}
                 </span>
               </div>
 
               {/* Rodapé */}
-              <div className="flex items-end justify-between gap-2">
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] sm:text-xs opacity-70 mb-1">
+                  <p className="text-[9px] sm:text-[10px] opacity-70 mb-0.5">
                     Nome do Titular
                   </p>
-                  <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide break-words leading-tight">
+                  <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wide leading-tight line-clamp-2">
                     {card.printedName}
                   </p>
                 </div>
 
                 <div className="text-right flex-shrink-0">
-                  <p className="text-[10px] sm:text-xs opacity-70 mb-1">
+                  <p className="text-[9px] sm:text-[10px] opacity-70 mb-0.5">
                     Validade
                   </p>
-                  <p className="text-xs sm:text-sm font-semibold font-mono whitespace-nowrap">
+                  <p className="text-[11px] sm:text-xs font-semibold font-mono whitespace-nowrap">
                     {expMonth}/{expYear}
                   </p>
                 </div>
