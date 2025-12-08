@@ -1,6 +1,6 @@
 # AnyPay - Banking Application
 
-**Projeto desenvolvido para o Hackathon ACG 2024**
+**Projeto desenvolvido para o Hackathon ACG 2025**
 
 Um aplicativo bancário simplificado e moderno com foco em gerenciamento de cartões e contas, construído com as mais recentes tecnologias web.
 
