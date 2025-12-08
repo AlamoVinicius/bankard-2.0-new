@@ -4,6 +4,10 @@
 
 Um aplicativo bancário simplificado e moderno com foco em gerenciamento de cartões e contas, construído com as mais recentes tecnologias web.
 
+## 🌐 Demo Online
+
+**🚀 [Testar aplicação em produção](https://bankard-2-0-new.vercel.app)**
+
 ---
 
 ## 👥 Autores
@@ -92,6 +96,28 @@ npm run dev
 ```
 
 A aplicação estará disponível em `http://localhost:5173`
+
+### ⚙️ Configuração Inicial
+
+Na primeira execução, você verá uma tela de configuração onde pode escolher entre dois modos de operação:
+
+![Configuração Inicial](./docs/config-screen.png)
+
+**Opções disponíveis:**
+
+1. **Dados Mockados (Recomendado para desenvolvimento)**
+   - Simula respostas da API com dados de exemplo
+   - Não requer conexão com servidor
+   - Útil para desenvolvimento e testes
+   - Dados são armazenados no localStorage
+
+2. **API Real**
+   - Conecta com servidor real na URL informada
+   - Dados reais do backend
+   - Requer autenticação válida
+   - Personalize a URL da API backend (ex: `https://localhost:7162`)
+
+Você pode alterar essas configurações depois através do localStorage do navegador.
 
 ### Build para Produção
 
