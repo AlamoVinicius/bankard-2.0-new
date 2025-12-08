@@ -149,21 +149,21 @@ export function CardItem({ card, className, isSelected = false, showBalance = tr
               </div>
 
               {/* Rodapé */}
-              <div className="flex items-end justify-between">
-                <div>
+              <div className="flex items-end justify-between gap-2">
+                <div className="flex-1 min-w-0">
                   <p className="text-[10px] sm:text-xs opacity-70 mb-1">
                     Nome do Titular
                   </p>
-                  <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide truncate max-w-[180px] sm:max-w-none">
+                  <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide break-words leading-tight">
                     {card.printedName}
                   </p>
                 </div>
 
-                <div className="text-right">
+                <div className="text-right flex-shrink-0">
                   <p className="text-[10px] sm:text-xs opacity-70 mb-1">
                     Validade
                   </p>
-                  <p className="text-xs sm:text-sm font-semibold font-mono">
+                  <p className="text-xs sm:text-sm font-semibold font-mono whitespace-nowrap">
                     {expMonth}/{expYear}
                   </p>
                 </div>
